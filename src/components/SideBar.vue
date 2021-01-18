@@ -1,5 +1,5 @@
 <template>
-  <div class="side-bar">
+  <div class="side-bar d-flex">
     <div class="dashboard-menu d-flex flex-column">
       <!-- Avatar -->
       <!-- eslint-disable-next-line -->
@@ -12,7 +12,7 @@
       <div class="dasboard-link menu-options flex-grow-1">
         <ul v-for="(link, index) in links" :key="index">
           <!-- eslint-disable-next-line -->
-          <li class="d-flex justify-content-start align-items-center" :class="active == index ? 'active':''" @click.prevent="setActive(index)">
+          <li class="d-flex justify-content-start align-items-center" :class="active == index ? 'active':''" @click.prevent="setActive(index), changeComponenet(link.title)">
             <p class="icon-svg mb-0 mr-4" :style="{ backgroundColor: link.color, padding: 8+px}">
               <font-awesome-icon :icon=link.icon />
             </p>
@@ -30,16 +30,35 @@
         </div>
       </div>
     </div>
+    <div>
+      <component :is="currentComp"></component>
+      <!-- <Categories v-if="componentActive = false" />
+      <Clients v-if="componentActive = false" />
+      <Dashboard v-if="componentActive = false" />
+      <Messages v-if="componentActive = false" />
+      <Orders v-if="componentActive = false" />
+      <Products v-if="componentActive = false" />
+      <Profile v-if="componentActive = false" /> -->
+    </div>
 
   </div>
 </template>
 
 <script>
+import Categories from './Categories';
+import Clients from './Clients';
+import Dashboard from './Dashboard';
+import Messages from './Messages';
+import Orders from './Orders';
+import Products from './Products';
+import Profile from './Profile';
+
 export default {
   name: 'SideBar',
   data() {
     return {
       active: 0,
+      currentComp: Dashboard,
       links: [
         { icon: 'columns', title: 'Dashboard', color: '#7d5aff' },
         { icon: 'tag', title: 'Products', color: '#ff818a' },
@@ -51,10 +70,22 @@ export default {
       ],
     };
   },
+  components: {
+    Dashboard,
+    Products,
+    Categories,
+    Orders,
+    Clients,
+    Messages,
+    Profile,
+  },
   methods: {
     setActive(index) {
       this.active = index;
     },
+    changeComponenet(data) {
+      this.currentComp = data;
+    }
   },
 };
 </script>
