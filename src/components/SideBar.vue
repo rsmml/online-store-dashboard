@@ -32,13 +32,6 @@
     </div>
     <div>
       <component :is="currentComp"></component>
-      <!-- <Categories v-if="componentActive = false" />
-      <Clients v-if="componentActive = false" />
-      <Dashboard v-if="componentActive = false" />
-      <Messages v-if="componentActive = false" />
-      <Orders v-if="componentActive = false" />
-      <Products v-if="componentActive = false" />
-      <Profile v-if="componentActive = false" /> -->
     </div>
 
   </div>
