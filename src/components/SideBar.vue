@@ -78,7 +78,7 @@ export default {
     },
     changeComponenet(data) {
       this.currentComp = data;
-    }
+    },
   },
 };
 </script>

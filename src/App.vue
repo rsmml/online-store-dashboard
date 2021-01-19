@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <SideBar></SideBar>
+    <SideBar v-if="signedIn()"></SideBar>
+    <!-- <SideBar></SideBar> -->
     <router-view/>
   </div>
 </template>
@@ -12,6 +13,11 @@ export default {
   name: 'App',
   components: {
     SideBar,
+  },
+  methods: {
+    signedIn() {
+      return localStorage.signedIn;
+    },
   },
 };
 </script>
