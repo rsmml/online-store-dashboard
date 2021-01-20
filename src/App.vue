@@ -11,12 +11,23 @@ import SideBar from './components/SideBar';
 
 export default {
   name: 'App',
+  user_id: '',
   components: {
     SideBar,
+  },
+  created() {
+    this.checkUser();
+  },
+  updated() {
+    this.checkUser();
   },
   methods: {
     signedIn() {
       return localStorage.signedIn;
+    },
+    checkUser() {
+      console.log(localStorage.id);
+      console.log(localStorage.email);
     },
   },
 };

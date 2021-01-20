@@ -9,12 +9,13 @@
       </div>
 
       <!-- Login Form -->
-      <form>
-        <input type="text" id="login" class="fadeIn second" name="login" placeholder="E-mail">
+      <form @submit.prevent="signup">
         <!-- eslint-disable-next-line -->
-        <input type="password" id="password" class="fadeIn third" name="login" placeholder="Password">
+        <input v-model="email" type="text" id="login" class="fadeIn second" name="login" placeholder="E-mail">
         <!-- eslint-disable-next-line -->
-        <input type="password" id="password" class="fadeIn third" name="login" placeholder="Password">
+        <input v-model="password" type="password" id="password" class="fadeIn third" name="login" placeholder="Password">
+        <!-- eslint-disable-next-line -->
+        <input v-model="password_confirmation"type="password" id="password" class="fadeIn third" name="login" placeholder="Repeat Password">
         <input type="submit" class="fadeIn fourth" value="Register">
       </form>
 
@@ -27,8 +28,51 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Register',
+  data() {
+    return {
+      email: '',
+      password: '',
+      password_confirmation: '',
+      eror: '',
+    };
+  },
+  created() {
+    this.checkSignedIn();
+  },
+  updated() {
+    this.checkSignedIn();
+  },
+  methods: {
+    signup() {
+      axios.post('http://localhost:3000/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
+        .then(response => this.signinSuccesful(response))
+        .catch(error => this.signinFailed(error));
+    },
+    signinSuccesful(response) {
+      if (!response.data.csrf) {
+        this.signinFailed(response);
+      }
+
+      localStorage.csrf = response.data.csrf;
+      localStorage.signedIn = true;
+      this.error = '';
+      this.$router.replace('/');
+    },
+    signinFailed(error) {
+      this.error = (error.response && error.response.data && error.response.data.error) || '';
+      delete localStorage.csrf;
+      delete localStorage.signedIn;
+    },
+    checkSignedIn() {
+      if (localStorage.signedIn) {
+        this.$router.replace('/');
+      }
+    },
+  },
 };
 </script>
 

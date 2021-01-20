@@ -33,16 +33,55 @@ export default {
   name: 'LogIn',
   data() {
     return {
-      signIn: false,
       email: '',
       password: '',
+      error: '',
     };
+  },
+  created() {
+    this.checkSignedIn();
+  },
+  updated() {
+    this.checkSignedIn();
   },
   methods: {
     signin() {
-      axios.post('http://localhost:3000/users/sign_in', { email: this.email, password: this.password })
-        .then(response => console.log(response))
-        .catch(error => console.log(error));
+      axios.post('http://localhost:3000/signin', { email: this.email, password: this.password })
+        .then(response => this.signinSuccesful(response))
+        .catch(error => this.signinFailed(error));
+    },
+    signinSuccesful(response) {
+      if (!response.data.csrf) {
+        this.signinFailed(response);
+      }
+      localStorage.csrf = response.data.csrf;
+      localStorage.signedIn = true;
+      localStorage.email = this.email;
+      this.getUserId();
+      this.error = '';
+      this.$router.replace('/');
+    },
+    getUserId() {
+      axios.get('http://localhost:3000/check_user')
+        .then((response) => {
+          const arr = response.data.users;
+          const obj = arr.find(x => x.email === this.email);
+          if (obj) {
+            localStorage.id = obj.id;
+          }
+        });
+    },
+    signinFailed(error) {
+      this.error = (error.response && error.response.data && error.response.data.error) || '';
+      delete localStorage.csrf;
+      delete localStorage.signedIn;
+      delete localStorage.id;
+      delete localStorage.email;
+    },
+    checkSignedIn() {
+      if (localStorage.signedIn) {
+        this.$router.replace('/');
+      }
     },
   },
 };
